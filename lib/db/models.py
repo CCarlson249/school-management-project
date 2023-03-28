@@ -3,7 +3,7 @@ from sqlalchemy import ForeignKey, Column, Integer, String
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
-engine = create_engine('sqlite:///pet_stores.db')
+engine = create_engine('sqlite:///school.db')
 
 Base = declarative_base()
 
@@ -23,9 +23,9 @@ class Teachers(Base):
 class Students(Base):
     __tablename__ = 'students'
 
-    id = Column(Integer(), primary_key = True)
-    first_name = Column(String()),
-    last_name = Column(String()),
+    id = Column(Integer(), primary_key=True)
+    first_name = Column(String())
+    last_name = Column(String())
 
     grades = relationship('Grades', backref=backref('students'))    
     def __repr__(self):
@@ -35,13 +35,13 @@ class Students(Base):
 class Grades(Base):
     __tablename__ = "grades"
 
-    id = Column(Integer(), primary_key = True)
-    teacher_id = Column(Integer(), ForeignKey('teachers.id'))
+    id = Column(Integer(), primary_key=True)
+    teachers_id = Column(Integer(), ForeignKey('teachers.id'))
     students_id = Column(Integer(), ForeignKey('students.id'))
     grade = Column(String())
 
     def __repr__(self):
-        return f"Grade(id={self.id}, teacher_id={self.teacher_id}, student_id={self.student_id}, grade='{self.grade}')"
+        return f"Grade(id={self.id}, teacher_id={self.teachers_id}, student_id={self.students_id}, grade={self.grade})"
 
     
 
