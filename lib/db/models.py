@@ -41,8 +41,7 @@ class Grades(Base):
     grade = Column(String())
 
     def __repr__(self):
-        return f"Grade(id={self.id}, teacher_id={self.teachers_id}, student_id={self.students_id}, grade={self.grade})"
-
+        return f"Grade(id={self.id}, teacher_id={self.teachers_id}, student_id={self.students_id}, grade='{self.grade}')"
     
 
 

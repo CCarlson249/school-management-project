@@ -34,18 +34,18 @@ if __name__ == '__main__':
     session.add(student4)
     session.commit()
     
-    billys_grade_science = Grades(teacher_id=1, student_id=1, grade="B")
-    billys_grade_math = Grades(teacher_id=2, student_id=1, grade="B")
+    billys_grade_science = Grades(teachers_id=1, students_id=1, grade="B")
+    billys_grade_math = Grades(teachers_id=2, students_id=1, grade="B")
 
-    hannahs_grade_science = Grades(teacher_id = 1, student_id = 2, grade='A')
-    hannahs_grade_math = Grades(teacher_id = 2, student_id=2, grade="B")
-    hannahs_grade_history = Grades(teacher_id = 3, student_id = 2, grade= 'C')
+    hannahs_grade_science = Grades(teachers_id = 1, students_id = 2, grade='A')
+    hannahs_grade_math = Grades(teachers_id = 2, students_id=2, grade="B")
+    hannahs_grade_history = Grades(teachers_id = 3, students_id = 2, grade= 'C')
 
-    george_grade_science = Grades(teacher_id = 1, student_id = 3, grade='C')
-    george_grade_math = Grades(teacher_id = 2, student_id=3, grade="B")
-    george_grade_history = Grades(teacher_id = 3, student_id = 3, grade= 'B')
+    george_grade_science = Grades(teachers_id = 1, students_id = 3, grade='C')
+    george_grade_math = Grades(teachers_id = 2, students_id=3, grade="B")
+    george_grade_history = Grades(teachers_id = 3, students_id = 3, grade= 'B')
 
-    sarah_grade_math = Grades(teacher_id = 2, student_id=4, grade="B")
+    sarah_grade_math = Grades(teachers_id = 2, students_id=4, grade="B")
 
 
     session.add(billys_grade_science)
