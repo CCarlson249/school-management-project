@@ -2,6 +2,7 @@ from db.models import Students, Teachers, Grades
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError
+from tabulate import tabulate
 
 
 engine = create_engine('sqlite:///school.db')
@@ -95,7 +96,25 @@ def student_page():
     # --------- View Students Classes ---------- #
 
     if select == 1:
-        pass
+
+        student_id = input("Enter student ID: ")
+        view_student_classes(student_id)
+
+    # --------- View Students Grades ---------- #
+
+    if select == 2:
+
+        student_id = input()
+        view_student_grades(student_id)
+
+    # ----------------- Drop Class -------------- #
+
+    if select == 3:
+        student_id = input("Enter student ID: ")
+        teachers_id = input("Enter teacher ID: ")
+        drop_class(teachers_id, student_id)
+
+# ------------------ Admin Functions ------------------- #
 
 
 def add_teacher(first_name, last_name, subject):
@@ -118,15 +137,18 @@ def view_all_teachers():
         teachers = session.query(Teachers).all()
         if teachers:
             # print the teachers to the console
-            for teacher in teachers:
-                print(
-                    f"{teacher.id}: {teacher.first_name} {teacher.last_name} - {teacher.subject}")
+            headers = ["id", "Name", "Subject"]
+            data = [[t.id, f"{t.first_name} {t.last_name}", t.subject]
+                    for t in teachers]
+            print(tabulate(data, headers=headers))
         else:
             print("No teachers found")
     except Exception as e:
         print(f"Error: {e}")
     finally:
         session.close()
+
+# ------------------- Teachers Functions ---------------------- #
 
 
 def add_student(first_name, last_name):
@@ -177,9 +199,10 @@ def view_all_grades(teacher_id):
                             grades_by_student[student] = []
                         grades_by_student[student].append(grade.grade)
                 # print the grades to the console
-                for student, grades in grades_by_student.items():
-                    print(
-                        f"{teacher.first_name} {teacher.last_name} - {student.first_name} {student.last_name}: {grades}")
+                        headers = ["id", "Students Name", "Grade"]
+                        data = [
+                            [g.id, f"{g.student.first_name} {g.student.last_name}", g.grade] for g in grades]
+                        print(tabulate(data, headers=headers, tablefmt="fancy_grid"))
             else:
                 print(f"No grades found for teacher with id {teacher_id}")
         else:
@@ -213,3 +236,64 @@ def drop_student(student_id):
         session.close()
 
 # -------------------- Student's Functions -------------------- #
+
+
+def view_student_classes(student_id):
+    session = Session()
+    try:
+        # query for the student
+        student = session.query(Students).filter_by(id=student_id).first()
+        if student:
+            # print the student's classes to the console
+            print(f"Classes for {student.first_name} {student.last_name}:")
+            for grade in student.grades:
+                teacher = session.query(Teachers).filter_by(
+                    id=grade.teachers_id).first()
+                print(
+                    f"{teacher.first_name} {teacher.last_name}: {teacher.subject}")
+        else:
+            print("Student not found")
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        session.close()
+
+
+def view_student_grades(student_id):
+    session = Session()
+    try:
+        # query for the student
+        student = session.query(Students).filter_by(id=student_id).first()
+        if student:
+            # print the student's grades to the console
+            print(f"Grades for {student.first_name} {student.last_name}:")
+            for grade in student.grades:
+                teacher = session.query(Teachers).filter_by(
+                    id=grade.teachers_id).first()
+                print(
+                    f"{teacher.first_name} {teacher.last_name}: {teacher.subject} {grade.grade}")
+        else:
+            print("Student not found")
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        session.close()
+
+
+def drop_class(teachers_id, student_id):
+    session = Session()
+    try:
+        # delete the grade with the specified student and teacher ids
+        session.query(Grades).filter_by(
+            students_id=student_id, teachers_id=teachers_id).delete()
+
+        # commit the transaction
+        session.commit()
+
+        print(
+            f"Grade for student {student_id} and teacher {teachers_id} deleted successfully.")
+    except Exception as e:
+        print(f"Error: {e}")
+        session.rollback()
+    finally:
+        session.close()
